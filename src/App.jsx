@@ -1,8 +1,12 @@
-import React from "react";
-import "./App.css";
+import React from 'react'
+import { Outlet } from 'react-router-dom'
 
 const App = () => {
-  return <div></div>;
-};
+  return (
+    <div className='min-h-screen h-screen'>
+      <Outlet />
+    </div>
+  )
+}
 
-export default App;
+export default App
