@@ -5,7 +5,7 @@ const App = () => {
   localStorage.setItem("theme", "light");
 
   return (
-    <div className='min-h-screen h-screen bg-paper'>
+    <div className='min-h-screen bg-paper'>
       <Outlet />
     </div>
   )

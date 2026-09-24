@@ -47,14 +47,14 @@ const HomePage = () => {
   }
 
   return (
-   <Section className="min-h-dvh" containerClassName="flex min-h-dvh flex-col">
-  <main className="flex-1 pb-25">
-    <Outlet />
-  </main>
+    <Section className="min-h-dvh" containerClassName="flex min-h-dvh flex-col">
+      <main className="flex-1 pb-25">
+        <Outlet />
+      </main>
 
-  <div className="pointer-events-none fixed inset-x-0 bottom-0 z-10 bg-linear-to-t from-paper to-transparent pt-10 pb-5.5">
-    <Container>
-      <nav className="pointer-events-auto flex h-14.5 rounded-full border border-hair bg-card p-1.75">
+      <div className="pointer-events-none fixed inset-x-0 bottom-0 z-10 bg-linear-to-t from-paper to-transparent pt-10 pb-5.5">
+        <Container>
+          <nav className="pointer-events-auto flex h-14.5 rounded-full border border-hair bg-card p-1.75">
             {tabs.map((tab) => (
               <NavLink
                 key={tab.to}
@@ -76,7 +76,8 @@ const HomePage = () => {
                     <tab.icon className="size-5 shrink-0" />
                     <span
                       className={cn(
-                        "overflow-hidden whitespace-nowrap text-[13px] font-extrabold transition-all duration-300 ease-out motion-reduce:transition-none",
+                        "overflow-hidden whitespace-nowrap text-[13px] font-extrabold leading-none [text-box:trim-both_cap_alphabetic]",
+                        "transition-all duration-300 ease-out motion-reduce:transition-none",
                         isActive
                           ? "ml-1.5 max-w-24 opacity-100"
                           : "ml-0 max-w-0 opacity-0",
