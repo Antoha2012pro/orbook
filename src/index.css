@@ -1,10 +1,30 @@
 @import "tailwindcss";
 
+/* Nunito — вариативный шрифт: один файл содержит все жирности 200–1000 */
+@font-face {
+    font-family: "Nunito";
+    src: url("./assets/fonts/Nunito-Variable.woff2") format("woff2");
+    font-weight: 200 1000;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: "Nunito";
+    src: url("./assets/fonts/Nunito-Italic-Variable.woff2") format("woff2");
+    font-weight: 200 1000;
+    font-style: italic;
+    font-display: swap;
+}
+
 /* dark: variant срабатывает, когда на <html> есть класс .dark */
 @custom-variant dark (&:where(.dark, .dark *));
 
 /* ===== Soft · Hell (светлая тема, по умолчанию) ===== */
 @theme {
+    --font-sans: "Nunito", ui-sans-serif, system-ui, sans-serif;
+    --font-nunito: "Nunito", ui-sans-serif, system-ui, sans-serif;
+
     --color-paper: #fbf7f2;
     --color-accent: #6c4df6;
     --color-ink: #2a2433;
