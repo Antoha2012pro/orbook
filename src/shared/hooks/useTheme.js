@@ -2,7 +2,6 @@ import { useCallback, useEffect, useState } from "react";
 
 const STORAGE_KEY = "theme";
 
-// "light" | "dark" | "system"
 const getStoredTheme = () => {
     try {
         return localStorage.getItem(STORAGE_KEY) || "system";
@@ -34,7 +33,6 @@ export const useTheme = () => {
         try {
             localStorage.setItem(STORAGE_KEY, next);
         } catch {
-            // localStorage недоступен — тема просто не сохранится
         }
         setThemeState(next);
     }, []);
