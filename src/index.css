@@ -1,5 +1,135 @@
 @import "tailwindcss";
 
-button, a {
-    border: none,
+/* dark: variant срабатывает, когда на <html> есть класс .dark */
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* ===== Soft · Hell (светлая тема, по умолчанию) ===== */
+@theme {
+    --color-paper: #fbf7f2;
+    --color-accent: #6c4df6;
+    --color-ink: #2a2433;
+    --color-muted: #6a6275;
+    --color-faint: #978fa1;
+    --color-card: #ffffff;
+    --color-faint2: #c0b8c6;
+    --color-on-accent: #ffffff;
+    --color-danger: #d6455d;
+    --color-sand: #f3ede5;
+    --color-hair: #f0eae2;
+    --color-white: #ffffff;
+    --color-today-sub: #e3dbff;
+    --color-accent-ink: #4a31c9;
+    --color-tint: #eee9ff;
+    --color-rule: #eae2d8;
+    --color-ok-tint: #e1f5eb;
+    --color-danger-tint: #fce7eb;
+    --color-ok: #1f9d6b;
+    --color-skeleton: #eee7de;
+
+    /* fach */
+    --color-deutsch-tint: #f6d7da;
+    --color-deutsch-text: #8d364c;
+    --color-deutsch-solid: #e4577a;
+
+    --color-mathe-tint: #d8e0f1;
+    --color-mathe-text: #2f5192;
+    --color-mathe-solid: #4c82ec;
+
+    --color-englisch-tint: #f8e1ca;
+    --color-englisch-text: #94561b;
+    --color-englisch-solid: #ee8a2c;
+
+    --color-physik-tint: #d2e9e9;
+    --color-physik-text: #1d6c7b;
+    --color-physik-solid: #2afac7;
+
+    --color-geschichte-tint: #efe3c8;
+    --color-geschichte-text: #765c14;
+    --color-geschichte-solid: #bf9420;
+
+    --color-kunst-tint: #f1d8ea;
+    --color-kunst-text: #7b397e;
+    --color-kunst-solid: #c75cc8;
+
+    --color-sport-tint: #dfdfe2;
+    --color-sport-text: #444f63;
+    --color-sport-solid: #6e80a0;
+
+    --color-biologie-tint: #d5e9d9;
+    --color-biologie-text: #276e47;
+    --color-biologie-solid: #3fb173;
+}
+
+/* ===== Soft · Dunkel (тёмная тема) ===== */
+.dark {
+    color-scheme: dark;
+
+    --color-paper: #16131c;
+    --color-accent: #a58bff;
+    --color-ink: #f4f0f8;
+    --color-muted: #b5acc1;
+    --color-faint: #877e94;
+    --color-card: #221e2a;
+    --color-faint2: #5f576c;
+    --color-on-accent: #1a1333;
+    --color-danger: #ff8aa0;
+    --color-sand: #2a2533;
+    --color-hair: #2b2634;
+    --color-white: #ffffff;
+    --color-today-sub: #2c2548;
+    --color-accent-ink: #cfc2ff;
+    --color-tint: #2c2548;
+    --color-rule: #352f40;
+    --color-ok-tint: #163027;
+    --color-danger-tint: #3a1d25;
+    --color-ok: #5fd3a2;
+    --color-skeleton: #27222f;
+
+    /* fach */
+    --color-deutsch-tint: #482836;
+    --color-deutsch-text: #f3b5c4;
+    --color-deutsch-solid: #e76b8a;
+
+    --color-mathe-tint: #28314e;
+    --color-mathe-text: #b0c8f6;
+    --color-mathe-solid: #6191ee;
+
+    --color-englisch-tint: #4a3326;
+    --color-englisch-text: #f8cca2;
+    --color-englisch-solid: #f09845;
+
+    --color-physik-tint: #223b47;
+    --color-physik-text: #a4dce6;
+    --color-physik-solid: #48b9ce;
+
+    --color-geschichte-tint: #403523;
+    --color-geschichte-text: #e3d09d;
+    --color-geschichte-solid: #c7a13b;
+
+    --color-kunst-tint: #422947;
+    --color-kunst-text: #e6b8e8;
+    --color-kunst-solid: #ce70d1;
+
+    --color-sport-tint: #2f313e;
+    --color-sport-text: #bfc7d5;
+    --color-sport-solid: #7f8fab;
+
+    --color-biologie-tint: #253b35;
+    --color-biologie-text: #aadcc2;
+    --color-biologie-solid: #56ba84;
+}
+
+@layer base {
+    html {
+        color-scheme: light;
+    }
+
+    body {
+        @apply bg-paper text-ink;
+    }
+
+    button,
+    a {
+        border: none;
+    }
 }

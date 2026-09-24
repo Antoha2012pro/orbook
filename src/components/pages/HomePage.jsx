@@ -8,7 +8,7 @@ const HomePage = () => {
   const [isPasswordValid, setIsPasswordValid] = useState(true);
 
   if (!isLogged) {
-    return (<div className="bg-[#fbf7f2]">
+    return (<div className="bg-paper">
       <Container className="flex flex-col min-h-screen">
         <div className="space-y-6 mb-auto pt-35">
           <div className="" />
@@ -24,14 +24,14 @@ const HomePage = () => {
             value={passwordValue}
             onChange={(e) => setPasswordValue(e.target.value)}
             placeholder="Passwort eingeben"
-            className="py-3.5 pl-4.25 pr-2 text-[16px] font-normal bg-white w-full"
+            className="py-3.5 pl-4.25 pr-2 text-[16px] font-normal bg-card text-ink placeholder:text-faint w-full"
           />
-          {isPasswordValid ? (<p className="text-[12px] font-normal">Steht in der Klassengruppe.</p>) : (<div>
+          {isPasswordValid ? (<p className="text-[12px] font-normal text-muted">Steht in der Klassengruppe.</p>) : (<div>
             <img src="" alt="" />
             <p></p>
           </div>)}
           
-          <button className="py-3.5 w-full space-x-3 rounded-2 mt-4 rounded-full bg-purple-600"><div /> Öffnen</button>
+          <button className="py-3.5 w-full space-x-3 rounded-2 mt-4 rounded-full bg-accent text-on-accent"><div /> Öffnen</button>
         </form>
         <div className="flex justify-between text-[12px]">
             <Link to="/datenschutz" className={({isActive}) => cn(
