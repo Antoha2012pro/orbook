@@ -1,10 +1,11 @@
 import { createBrowserRouter } from "react-router-dom";
 import App from "../../App";
-import HomePage from "../../components/pages/HomePage";
-import ThisWeek from "../../components/pages/ThisWeek";
-import Tests from "../../components/pages/Tests";
-import Statistic from "../../components/pages/Statistic";
-import More from "../../components/pages/More";
+import HomePage from "../../pages/HomePage";
+import Tests from "../../pages/Tests";
+import Statistic from "../../pages/Statistic";
+import More from "../../pages/More";
+import Today from "../../pages/Today";
+import Week from "../../pages/Week";
 
 export const router = createBrowserRouter([
     {
@@ -14,7 +15,9 @@ export const router = createBrowserRouter([
             {
         Component: HomePage,
         children: [
-          { index: true, Component: ThisWeek },
+          { index: true, Component: Week },
+          { path: "woche", Component: Week },
+          { path: "heute", Component: Today },
           { path: "testen", Component: Tests },
           { path: "statistik", Component: Statistic },
           { path: "mehr", Component: More },

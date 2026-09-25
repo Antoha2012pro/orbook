@@ -1,8 +1,8 @@
 import React from "react";
-import Container from "../ui/Container";
-import { cn } from "../../shared/utils/cn";
+import Container from "../components/ui/Container";
+import { cn } from "../shared/utils/cn";
 import { Link } from "react-router-dom";
-import Section from "../ui/Section";
+import Section from "../components/ui/Section";
 import { CircleAlert } from "lucide-react";
 
 const AuthPage = ({
@@ -39,7 +39,7 @@ const AuthPage = ({
           onChange={onChangePasswordValue}
           placeholder="Passwort eingeben"
           className={cn(
-            "w-full rounded-2xl bg-card h-12.5 px-4.25 text-[16px] font-normal text-ink placeholder:text-faint outline-none focus:ring-2 focus:ring-accent/30 mb-1.5",
+            "w-full rounded-2xl bg-card h-12.5 px-4.25 text-[16px] font-normal text-ink placeholder:text-faint outline-none focus:ring-2 focus:ring-accent/30 mb-1.5 transition",
             isPasswordValid ? "border border-transparent" : "border border-danger focus:ring-danger/30",
           )}
         />
