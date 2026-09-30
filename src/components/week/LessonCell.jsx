@@ -1,35 +1,56 @@
 import { Flag } from "lucide-react";
 import { cn } from "../../shared/utils/cn";
-import { fachColors } from "../../shared/constants/fachColors";
+import { fachClasses, fachName, statusBadge } from "../../shared/utils/lessons";
 
-const LessonCell = ({ lesson, isPast, style }) => {
-  const base = "relative flex gap-1.75 flex-col justify-between rounded-[14px] px-2 py-1.75 leading-[0,7] overflow-hidden";
+// ─────────────────────────────────────────────────────────────
+// Ячейка урока в сетке недели.
+// Если урок есть — это кнопка (клик → шторка урока). Её оборачивает
+// LessonContextMenu, поэтому все лишние пропсы (...props: style,
+// onClick, onContextMenu, ref от Radix) передаём прямо на <button>.
+// ─────────────────────────────────────────────────────────────
+const LessonCell = ({ lesson, isPast, overrides, className, ...props }) => {
+  // Общие классы ячейки
+  const base = "relative flex flex-col justify-between gap-1.75 overflow-hidden rounded-[14px] px-2 py-1.75 leading-none";
 
+  // Пустая ячейка (урока нет или курс скрыт)
   if (!lesson) {
-    return <div style={style} className={cn(base, "bg-sand/60")} />;
+    return <div style={props.style} className={cn(base, "bg-sand/60", className)} />;
   }
 
+  // Классы для кнопки: текст слева, без выделения текста и системного меню iOS при долгом нажатии
+  const interactive = "text-left select-none [-webkit-touch-callout:none] transition-transform active:scale-[0.97]";
+
+  // Подпись для скринридера: «Mathe, Vertretung»
+  const label = [fachName(lesson.fach), statusBadge(lesson)].filter(Boolean).join(", ");
+
+  // Отменённый урок: пунктирная рамка, зачёркнутое сокращение
   if (lesson.status === "cancelled") {
     return (
-      <div
-        style={style}
-        className={cn(base, "border-[1.5px] border-dashed border-faint2 text-faint", isPast && "opacity-50")}
+      <button
+        type="button"
+        aria-label={label}
+        {...props}
+        className={cn(base, interactive, "border-[1.5px] border-dashed border-faint2 text-faint", isPast && "opacity-50", className)}
       >
         <span className="text-[14px] font-extrabold line-through">{lesson.short}</span>
-      </div>
+      </button>
     );
   }
 
-  const isChanged = lesson.status === "changed";
+  const isChanged = lesson.status === "changed"; // Vertretung?
 
   return (
-    <div
-      style={style}
+    <button
+      type="button"
+      aria-label={label}
+      {...props}
       className={cn(
         base,
-        fachColors[lesson.fach],
-        isChanged && "ring-2 ring-accent ring-inset",
-        isPast && "opacity-45",
+        interactive,
+        fachClasses(lesson.fach, overrides), // цвет предмета (с учётом своего цвета)
+        isChanged && "ring-2 ring-accent ring-inset", // рамка у замены
+        isPast && "opacity-45", // прошедший урок бледнее
+        className,
       )}
     >
       <span className="text-[14px] font-extrabold">{lesson.short}</span>
@@ -42,12 +63,13 @@ const LessonCell = ({ lesson, isPast, style }) => {
         {lesson.exam ? "Test" : lesson.room}
       </span>
 
+      {/* флажок Klausur в углу */}
       {lesson.exam && (
-        <span className="absolute top-px right-px grid p-1.25 place-items-center rounded-bl-md rounded-tr-[14px] bg-accent text-on-accent">
+        <span className="absolute top-px right-px grid place-items-center rounded-tr-[14px] rounded-bl-md bg-accent p-1.25 text-on-accent">
           <Flag className="size-2.5" strokeWidth={3} />
         </span>
       )}
-    </div>
+    </button>
   );
 };
 

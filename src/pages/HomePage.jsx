@@ -7,6 +7,8 @@ import Container from "../components/ui/Container";
 import { ChartNoAxesColumn, Ellipsis, Flag, Table2 } from "lucide-react";
 import SideNav from "../components/navbar/SideNav";
 import BottomNav from "../components/navbar/BottomNav";
+import { Toaster } from "sonner";
+import SheetHost from "../components/sheets/SheetHost";
 
 const CLASS_PASSWORD = "1234";
 
@@ -50,6 +52,11 @@ const HomePage = () => {
       </main>
 
       <BottomNav />
+
+      {/* шторки из адреса (?sheet=…) — работают на любой странице */}
+      <SheetHost />
+      {/* всплывающие уведомления (toast) */}
+      <Toaster position="top-center" toastOptions={{ style: { fontFamily: "inherit" } }} />
     </Container>
   );
 };

@@ -1,12 +1,13 @@
+import { Link } from "react-router-dom";
 import { format } from "date-fns";
 import { de } from "date-fns/locale";
 import { cn } from "../../shared/utils/cn";
 
-const DayHeader = ({ day, isToday, hasExam, onClick, style }) => {
+// Шапка дня в сетке («MI 17»). Это ссылка на страницу дня (to="/tag/2025-09-17")
+const DayHeader = ({ day, isToday, hasExam, to, style }) => {
   return (
-    <button
-      type="button"
-      onClick={onClick}
+    <Link
+      to={to}
       style={style}
       aria-label={format(day, "EEEE, d. MMMM", { locale: de })}
       className={cn(
@@ -30,7 +31,7 @@ const DayHeader = ({ day, isToday, hasExam, onClick, style }) => {
       {!isToday && hasExam && (
         <span className="absolute top-1.25 right-1.75 size-1.5 rounded-full bg-accent" />
       )}
-    </button>
+    </Link>
   );
 };
 

@@ -42,3 +42,13 @@ export const isPeriodNow = (period, day, now) => {
   end.setHours(eh, em, 0, 0);
   return start <= now && now <= end;
 };
+// Date дня + "10:30" → Date с этим временем
+export const atTime = (day, hhmm) => {
+  const date = new Date(day); // копия, чтобы не менять исходную дату
+  const [h, m] = hhmm.split(":").map(Number); // часы и минуты
+  date.setHours(h, m, 0, 0); // ставим время
+  return date;
+};
+
+// Минуты от полуночи для Date
+export const minutesOfDay = (date) => date.getHours() * 60 + date.getMinutes();
