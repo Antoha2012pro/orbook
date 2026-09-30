@@ -16,6 +16,10 @@
     font-display: swap;
 }
 
+@utility trim {
+  text-box: trim-both cap alphabetic;
+}
+
 @custom-variant dark (&:where(.dark, .dark *));
 
 @theme {

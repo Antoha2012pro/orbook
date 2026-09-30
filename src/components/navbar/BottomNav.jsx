@@ -1,8 +1,8 @@
 import { Link, useLocation } from "react-router-dom";
-import { navTabs } from "../../shared/constants";
 import { cn } from "../../shared/utils/cn";
 import { isTabActive } from "../../shared/utils/isTabActive";
 import Container from "../ui/Container";
+import { navTabs } from "../../shared/constants/constants";
 
 const BottomNav = () => {
   const { pathname } = useLocation();

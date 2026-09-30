@@ -1,18 +1,17 @@
 import { Link, useLocation } from "react-router-dom";
-import { navTabs } from "../../shared/constants";
 import { cn } from "../../shared/utils/cn";
 import { useState } from "react";
 import { Search } from "lucide-react";
 import SideNavHeader from "./SideNavHeader";
 import { isTabActive } from "../../shared/utils/isTabActive";
 import NavigationLink from "./NavigationLink";
+import { navTabs } from "../../shared/constants/constants";
 
 const SideNav = () => {
   const [searchValue, setSearchValue] = useState("");
   const { pathname } = useLocation();
 
   const [isHidden, setIsHidden] = useState(false);
-  console.log(isHidden);
 
   return (
     <aside
