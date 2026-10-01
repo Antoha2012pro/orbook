@@ -18,15 +18,15 @@ const AuthPage = ({
     >
       <div className="space-y-4 mb-auto pt-27.5">
         <div className="" />
-        <h2 className="text-[50px] font-black text-ink">ORBook</h2>
-        <p className="font-normal text-[16px] text-muted">
+        <h2 className="text-display font-black text-ink">ORBook</h2>
+        <p className="font-normal text-input text-muted">
           Stundenplan, Vertretungen und Testen in vielen Schulen
         </p>
       </div>
       <form onSubmit={onSubmit} className="mt-auto">
         <label
           htmlFor="class-password"
-          className="block font-bold text-[13px] mx-1.5 mb-1.5 text-ink"
+          className="block font-bold text-label mx-1.5 mb-1.5 text-ink"
         >
           Klassenpasswort
         </label>
@@ -39,26 +39,26 @@ const AuthPage = ({
           onChange={onChangePasswordValue}
           placeholder="Passwort eingeben"
           className={cn(
-            "w-full rounded-2xl bg-card h-12.5 px-4.25 text-[16px] font-normal text-ink placeholder:text-faint outline-none focus:ring-2 focus:ring-accent/30 mb-1.5 transition",
+            "w-full rounded-2xl bg-card h-12.5 px-4.25 text-input font-normal text-ink placeholder:text-faint outline-none focus:ring-2 focus:ring-accent/30 mb-1.5 transition",
             isPasswordValid ? "border border-transparent" : "border border-danger focus:ring-danger/30",
           )}
         />
         {isPasswordValid ? (
-          <p className="text-[12px] font-normal text-muted">
+          <p className="text-caption font-normal text-muted">
             Steht in der Klassengruppe.
           </p>
         ) : (
           <div className="flex items-center gap-1.5 text-danger">
 <CircleAlert className="size-3" />
-<p className="text-[13px] font-normal">Falsches Passwort</p>
+<p className="text-label font-normal">Falsches Passwort</p>
           </div>
         )}
 
-        <button className="py-3.5 w-full flex gap-3 justify-center mt-4 rounded-full bg-accent text-on-accent text-[15px] font-bold" type="submit">
+        <button className="py-3.5 w-full flex gap-3 justify-center mt-4 rounded-full bg-accent text-on-accent text-body font-bold" type="submit">
           <svg className="w-1 h-2" /> Öffnen
         </button>
       </form>
-      <div className="flex justify-between text-[12px]">
+      <div className="flex justify-between text-caption">
         <Link to="/datenschutz" className={cn("font-bold text-muted")}>
           Datenschutz
         </Link>

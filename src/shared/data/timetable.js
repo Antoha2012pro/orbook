@@ -1,4 +1,5 @@
-import { addDays, format, getISODay, isSameDay, startOfDay } from "date-fns";
+import { de } from "date-fns/locale";
+import { addDays, addWeeks, format, getISODay, isSameDay, startOfDay, startOfISOWeek } from "date-fns";
 
 // Класс пользователя — используется в тексте «Teilen» («… bei der 9b»)
 export const SCHOOL_CLASS = "9b";
@@ -20,9 +21,9 @@ const defaults = {
   englisch: { short: "En", teacher: "Sch", course: "En-9b" },
   physik: { short: "Ph", teacher: "Ric", course: "Ph-9b" },
   geschichte: { short: "Ge", teacher: "Bau", course: "Ge-9b" },
-  kunst: { short: "Ku", teacher: "Lan", course: "Ku-9b" },
+  kunst: { short: "Ku", teacher: "Lau", course: "Ku-9b" },
   sport: { short: "Sp", teacher: "Hen", course: "Sp-9b" },
-  biologie: { short: "Bio", teacher: "Kor", course: "Bio-9b" },
+  biologie: { short: "Bio", teacher: "Kra", course: "Bio-9b" },
 };
 
 // Короткая запись урока: L("mathe", "108", { ...доп. поля })
@@ -64,13 +65,13 @@ const week = [
     L("deutsch", "102"),
     L("mathe", "108"),
     L("physik", "301"),
-    L("geschichte", "B12", { status: "changed", originalRoom: "108" }),
+    L("geschichte", "B12", { status: "changed", teacher: "Kle", originalTeacher: "Bau", originalRoom: "108" }),
     L("sport", "Halle"),
     L("englisch", "210"),
   ],
   // Freitag
   [
-    L("mathe", "108", { exam: true, topic: "Quadratische Funktionen" }),
+    L("mathe", "108"), // Klausur на этом месте добавляется через exams ниже
     L("englisch", "210"),
     L("deutsch", "102"),
     L("biologie", "305"),
@@ -104,13 +105,62 @@ const holidays = {
 // Название праздника в этот день или null
 export const getHoliday = (date) => holidays[format(date, "MM-dd")] ?? null;
 
+// ЗАГЛУШКА: Klausuren и Tests. Даты заданы относительно текущей недели
+// (week: 0 — эта неделя, 1 — следующая…, day: 1 = Mo … 5 = Fr, period: номер урока).
+// examType: "klausur" (большая) или "test" (маленькая)
+const exams = [
+  { week: 0, day: 5, period: 1, lesson: L("mathe", "108"), examType: "klausur", topic: "Quadratische Funktionen" },
+  { week: 1, day: 2, period: 5, lesson: L("geschichte", "108"), examType: "test", topic: "Weimarer Republik" },
+  { week: 1, day: 4, period: 3, lesson: L("physik", "301"), examType: "test", topic: "Federpendel" },
+  { week: 2, day: 1, period: 2, lesson: L("englisch", "210"), examType: "klausur", topic: "Short Stories" },
+  { week: 3, day: 3, period: 4, lesson: L("biologie", "305"), examType: "test", topic: "Zellatmung" },
+];
+
+// Дата Klausur из записи выше (понедельник текущей недели + сдвиг)
+const examDate = (exam) => addDays(addWeeks(startOfISOWeek(new Date()), exam.week), exam.day - 1);
+
 // Уроки дня: массив длиной periods.length (null — урока нет).
 // Выходные и праздники — пустой массив.
 export const getDayLessons = (date) => {
   if (getHoliday(date)) return []; // праздник — уроков нет
   const weekday = getISODay(date); // 1 = Mo … 7 = So
   if (weekday > 5) return []; // выходной
-  return week[weekday - 1]; // уроки этого дня недели
+  const lessons = [...week[weekday - 1]]; // копия уроков этого дня недели
+  // Накладываем Klausuren, которые выпадают на эту дату
+  exams.forEach((exam) => {
+    if (!isSameDay(examDate(exam), date)) return; // не этот день
+    lessons[exam.period - 1] = { ...exam.lesson, exam: true, examType: exam.examType, topic: exam.topic };
+  });
+  return lessons;
+};
+
+// Ближайшие Klausuren/Tests (начиная с сегодня, на 5 недель вперёд).
+// Возвращает [{ date, lesson, period, index }]
+export const getUpcomingExams = (now) => {
+  const today = startOfDay(now); // полночь сегодня
+  const result = [];
+  for (let i = 0; i < 35; i++) {
+    const date = addDays(today, i); // проверяемый день
+    getDayLessons(date).forEach((lesson, index) => {
+      if (lesson?.exam) result.push({ date, lesson, period: periods[index], index });
+    });
+  }
+  return result;
+};
+
+// «Kommt noch»: изменения и Klausuren в ближайшие дни (со завтрашнего, days дней).
+// kind: "changed" | "cancelled" | "exam"
+export const getUpcomingChanges = (now, days = 7) => {
+  const result = [];
+  for (let i = 1; i <= days; i++) {
+    const date = addDays(startOfDay(now), i); // проверяемый день
+    getDayLessons(date).forEach((lesson, index) => {
+      if (!lesson) return; // пустой урок
+      const kind = lesson.exam ? "exam" : lesson.status; // что за событие
+      if (kind) result.push({ date, lesson, period: periods[index], index, kind });
+    });
+  }
+  return result;
 };
 
 // «Info zum Tag» для даты или null
@@ -119,13 +169,23 @@ export const getDayInfo = (date) => {
   return dayInfos[getISODay(date)] ?? null; // по дню недели
 };
 
-// Сколько за неделю отменено и сколько замен
+// Сколько за неделю отменено и сколько замен (+ в какие дни: ["Di", "Mi"])
 export const getWeekStats = (days) => {
-  const lessons = days.flatMap(getDayLessons).filter(Boolean); // все уроки недели без пустых
-  return {
-    cancelled: lessons.filter((l) => l.status === "cancelled").length, // fällt aus
-    changed: lessons.filter((l) => l.status === "changed").length, // Vertretungen
-  };
+  const stats = { cancelled: 0, changed: 0, cancelledDays: [], changedDays: [] };
+  days.forEach((day) => {
+    const short = format(day, "EEEEEE", { locale: de }); // "Mi"
+    getDayLessons(day).forEach((lesson) => {
+      if (lesson?.status === "cancelled") {
+        stats.cancelled += 1; // fällt aus
+        if (!stats.cancelledDays.includes(short)) stats.cancelledDays.push(short);
+      }
+      if (lesson?.status === "changed") {
+        stats.changed += 1; // Vertretung
+        if (!stats.changedDays.includes(short)) stats.changedDays.push(short);
+      }
+    });
+  });
+  return stats;
 };
 
 // Ближайшая Klausur, начиная с сегодняшнего дня (ищем на 4 недели вперёд)

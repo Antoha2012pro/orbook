@@ -6,6 +6,7 @@ import Statistic from "../../pages/Statistic";
 import More from "../../pages/More";
 import Week from "../../pages/Week";
 import Day from "../../pages/Day";
+import Admin from "../../pages/Admin";
 
 export const router = createBrowserRouter([
     {
@@ -22,6 +23,7 @@ export const router = createBrowserRouter([
           { path: "testen", Component: Tests },
           { path: "statistik", Component: Statistic },
           { path: "mehr", Component: More },
+          { path: "admin", Component: Admin }, // пока заглушка
         ],
       },
         ]

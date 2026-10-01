@@ -24,7 +24,7 @@ const DayPageHeader = ({ date, now, search = "" }) => {
       </Link>
 
       <div className="min-w-0 flex-1">
-        <p className="text-[13px] leading-4 font-extrabold text-accent">
+        <p className="text-label leading-4 font-extrabold text-accent">
           {formatDe(date, "EEEE")}
           {word && ` · ${word}`}
         </p>

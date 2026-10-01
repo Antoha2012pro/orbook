@@ -40,7 +40,7 @@ const Timeline = ({ date, lessons, now, onOpen }) => {
       {hours.map((h) => (
         <span
           key={h}
-          className="absolute left-0 -translate-y-1/2 text-right text-[11px] font-bold text-faint"
+          className="absolute left-0 -translate-y-1/2 text-right text-small font-bold text-faint"
           style={{ top: y(h * 60), width: AXIS - 12 }}
         >
           {h}:00
@@ -60,7 +60,7 @@ const Timeline = ({ date, lessons, now, onOpen }) => {
             {/* подпись перемены посередине промежутка */}
             {gap >= 10 && (
               <span
-                className="absolute right-0 -translate-y-1/2 text-center text-[10px] font-bold text-faint"
+                className="absolute right-0 -translate-y-1/2 text-center text-micro font-bold text-faint"
                 style={{ top: y(prevEnd + gap / 2), left: AXIS }}
               >
                 Pause · {gap} min
@@ -80,15 +80,15 @@ const Timeline = ({ date, lessons, now, onOpen }) => {
                 style={{ top: y(start), height: (end - start) * PX_PER_MIN, left: AXIS }} // позиция по времени
               >
                 <div className="flex items-center gap-2">
-                  <span className={cn("truncate text-[14px] font-extrabold", isCancelled && "line-through")}>
+                  <span className={cn("truncate text-body-sm font-extrabold", isCancelled && "line-through")}>
                     {fachName(lesson.fach)}
                   </span>
                   <StatusBadge lesson={lesson} />
-                  <span className="ml-auto shrink-0 text-[11px] font-bold opacity-70">
+                  <span className="ml-auto shrink-0 text-small font-bold opacity-70">
                     {period.start}–{period.end}
                   </span>
                 </div>
-                <p className="truncate text-[12px] font-bold opacity-80">
+                <p className="truncate text-caption font-bold opacity-80">
                   {isCancelled ? lesson.info ?? "fällt aus" : `${lesson.teacher} · ${lesson.room}`}
                 </p>
               </button>
@@ -100,7 +100,7 @@ const Timeline = ({ date, lessons, now, onOpen }) => {
       {/* линия «сейчас»: время в фиолетовой плашке + линия */}
       {showNow && (
         <div className="pointer-events-none absolute inset-x-0 z-10 flex -translate-y-1/2 items-center" style={{ top: y(nowMin) }}>
-          <span className="rounded-md bg-accent px-1.5 py-0.5 text-[10px] font-extrabold text-on-accent">
+          <span className="rounded-md bg-accent px-1.5 py-0.5 text-micro font-extrabold text-on-accent">
             {String(now.getHours()).padStart(2, "0")}:{String(now.getMinutes()).padStart(2, "0")}
           </span>
           <span className="size-2 shrink-0 rounded-full bg-accent" />

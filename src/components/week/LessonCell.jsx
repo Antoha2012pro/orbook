@@ -32,7 +32,7 @@ const LessonCell = ({ lesson, isPast, overrides, className, ...props }) => {
         {...props}
         className={cn(base, interactive, "border-[1.5px] border-dashed border-faint2 text-faint", isPast && "opacity-50", className)}
       >
-        <span className="text-[14px] font-extrabold line-through">{lesson.short}</span>
+        <span className="text-body-sm font-extrabold line-through">{lesson.short}</span>
       </button>
     );
   }
@@ -53,10 +53,10 @@ const LessonCell = ({ lesson, isPast, overrides, className, ...props }) => {
         className,
       )}
     >
-      <span className="text-[14px] font-extrabold">{lesson.short}</span>
+      <span className="text-body-sm font-extrabold">{lesson.short}</span>
       <span
         className={cn(
-          "text-[11px]",
+          "text-small",
           lesson.exam || isChanged ? "font-extrabold text-accent-ink" : "font-bold opacity-70",
         )}
       >

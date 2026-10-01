@@ -8,7 +8,7 @@ const BottomNav = () => {
   const { pathname } = useLocation();
 
   return (
-    <div className="pointer-events-none fixed inset-x-0 bottom-0 z-10 bg-linear-to-t from-paper to-transparent pt-10 pb-5.5 desktop:hidden">
+    <div className="pointer-events-none fixed inset-x-0 bottom-0 z-10 bg-linear-to-t from-paper to-transparent pt-10 pb-5.5 lg:hidden print:hidden">
       <Container>
         <nav className="pointer-events-auto flex h-14.5 rounded-full border border-hair bg-card p-1.75">
           {navTabs
@@ -31,7 +31,7 @@ const BottomNav = () => {
                   <tab.icon className="size-5 shrink-0" />
                   <span
                     className={cn(
-                      "overflow-hidden whitespace-nowrap text-[13px] font-extrabold leading-none [text-box:trim-both_cap_alphabetic]",
+                      "overflow-hidden whitespace-nowrap text-label font-extrabold leading-none [text-box:trim-both_cap_alphabetic]",
                       "transition-all duration-300 ease-out motion-reduce:transition-none",
                       active ? "ml-1.5 max-w-24 opacity-100" : "ml-0 max-w-0 opacity-0",
                     )}

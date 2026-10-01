@@ -30,11 +30,11 @@ const CurrentLessonCard = ({ live, onOpen }) => {
     >
       {/* верхняя строка */}
       <div className="flex items-baseline gap-2">
-        <span className="text-[12px] font-extrabold opacity-75">{isRunning ? "Jetzt" : "Gleich"}</span>
-        <span className="min-w-0 flex-1 truncate text-[17px] font-black">
+        <span className="text-caption font-extrabold opacity-75">{isRunning ? "Jetzt" : "Gleich"}</span>
+        <span className="min-w-0 flex-1 truncate text-subhead font-black">
           {fachName(lesson.fach)} · {lesson.room}
         </span>
-        <span className="shrink-0 text-[13px] font-extrabold opacity-90">
+        <span className="shrink-0 text-label font-extrabold opacity-90">
           {isRunning ? `noch ${live.minutesLeft} min` : `in ${live.minutesLeft} min`}
         </span>
       </div>
@@ -46,7 +46,7 @@ const CurrentLessonCard = ({ live, onOpen }) => {
         </div>
       )}
 
-      <p className="text-[12px] font-bold opacity-80">{footer}</p>
+      <p className="text-caption font-bold opacity-80">{footer}</p>
     </button>
   );
 };

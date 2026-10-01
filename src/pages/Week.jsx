@@ -1,8 +1,17 @@
-import { Link, useSearchParams } from "react-router-dom";
-import { addDays, addWeeks, differenceInCalendarISOWeeks, getISOWeek, startOfISOWeek } from "date-fns";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
+import { addDays, addWeeks, differenceInCalendarISOWeeks, getISOWeek, isSameDay, isSameISOWeek, startOfISOWeek } from "date-fns";
 import { ArrowLeft, ArrowRight, ChartNoAxesColumn, ChevronRight, Flag } from "lucide-react";
 import WeekGrid from "../components/week/WeekGrid";
 import WeekMenu from "../components/week/WeekMenu";
+import DayPanel from "../components/week/desktop/DayPanel";
+import PeriodGrid from "../components/week/desktop/PeriodGrid";
+import TimeGrid from "../components/week/desktop/TimeGrid";
+import WeekAside from "../components/week/desktop/WeekAside";
+import WeekHeaderDesktop from "../components/week/desktop/WeekHeaderDesktop";
+import { useHotkeys } from "../shared/hooks/useHotkeys";
+import { DESKTOP_QUERY, useMediaQuery } from "../shared/hooks/useMediaQuery";
+import { usePlanStore } from "../shared/store/planStore";
+import { cn } from "../shared/utils/cn";
 import { getNextExam, getWeekStats, periods } from "../shared/data/timetable";
 import { useNow } from "../shared/hooks/useNow";
 import { useSheet } from "../shared/hooks/useSheet";
@@ -48,6 +57,90 @@ const Week = () => {
   const stats = getWeekStats(days); // отмены и замены за неделю
   const nextExam = getNextExam(now); // ближайшая Klausur
 
+  // ── ПК ──
+  const navigate = useNavigate(); // переход на другую страницу
+  const isDesktop = useMediaQuery(DESKTOP_QUERY); // ≥ 1024px — компьютерный вид
+  const reloadPlan = usePlanStore((s) => s.reload); // «Plan neu laden»
+  const dayCount = showWeekend ? 7 : 5; // сколько дней показывать
+  const allDays = Array.from({ length: dayCount }, (_, i) => addDays(weekStart, i)); // показанные дни
+  const view = searchParams.get("ansicht") === "stunden" ? "stunden" : "zeitraster"; // вид недели на ПК
+
+  // Выбранный день для «Stunden + Tag»: из адреса (?tag=…), иначе сегодня (если эта неделя), иначе понедельник
+  const tagParam = parseISODate(searchParams.get("tag"));
+  const selectedDay =
+    tagParam && isSameISOWeek(tagParam, weekStart)
+      ? tagParam
+      : allDays.find((d) => isSameDay(d, now)) ?? weekStart;
+
+  // Поменять параметр адреса (null — удалить); replace — без новой записи в истории
+  const setParam = (key, value) => {
+    setSearchParams(
+      (prev) => {
+        if (value == null) prev.delete(key);
+        else prev.set(key, value);
+        return prev;
+      },
+      { replace: true },
+    );
+  };
+
+  // Горячие клавиши недели: ← → неделя, T сегодня, D Tagesansicht, R Plan neu laden
+  useHotkeys({
+    arrowleft: () => setWeek(addWeeks(weekStart, -1)),
+    arrowright: () => setWeek(addWeeks(weekStart, 1)),
+    t: () => setWeek(now),
+    d: () => navigate("/heute"),
+    r: reloadPlan,
+  });
+
+  if (isDesktop) {
+    return (
+      <section className="flex flex-col gap-6">
+        <WeekHeaderDesktop
+          weekStart={weekStart}
+          subtitle={`KW ${getISOWeek(weekStart)} · ${formatDe(weekStart, "d.")}–${formatDe(lastDay, "d. MMMM")}`}
+          title={weekTitle(weekStart, now)}
+          view={view}
+          onViewChange={(value) => setParam("ansicht", value === "stunden" ? "stunden" : null)}
+          onWeekChange={setWeek}
+          onToday={() => setWeek(now)}
+        />
+
+        {/* сетка + правая часть; на экране ≥ 1440px — рядом, на 1024–1439px — правая часть под сеткой */}
+        <div
+          className={cn(
+            "grid items-start gap-8",
+            view === "stunden" ? "desktop:grid-cols-[minmax(0,1fr)_420px]" : "desktop:grid-cols-[minmax(0,1fr)_330px]",
+          )}
+        >
+          {view === "stunden" ? (
+            <>
+              <PeriodGrid
+                weekStart={weekStart}
+                dayCount={dayCount}
+                selectedDay={selectedDay}
+                onSelectDay={(day) => setParam("tag", toISODate(day))}
+                onLessonClick={(day, index) => openSheet("stunde", { datum: toISODate(day), stunde: periods[index].n })}
+              />
+              <DayPanel day={selectedDay} />
+            </>
+          ) : (
+            <>
+              <TimeGrid
+                weekStart={weekStart}
+                dayCount={dayCount}
+                onLessonClick={(day, index) => openSheet("stunde", { datum: toISODate(day), stunde: periods[index].n })}
+              />
+              <WeekAside days={allDays} />
+            </>
+          )}
+        </div>
+      </section>
+    );
+  }
+
+  // ── Телефон ──
+
   return (
     <section className="flex flex-col gap-3.5">
       <header className="flex items-end justify-between gap-3">
@@ -56,11 +149,11 @@ const Week = () => {
           <button
             type="button"
             onClick={() => openSheet("kalender", { kw: toISODate(weekStart) })}
-            className="block text-[13px] leading-[0.8] font-extrabold text-faint"
+            className="block text-label leading-[0.8] font-extrabold text-faint"
           >
             KW {getISOWeek(weekStart)} · {formatDe(weekStart, "d.")}–{formatDe(lastDay, "d. MMM")}
           </button>
-          <h2 className="truncate text-[29px] leading-[1.1] font-black text-ink">{weekTitle(weekStart, now)}</h2>
+          <h2 className="truncate text-title leading-[1.1] font-black text-ink">{weekTitle(weekStart, now)}</h2>
         </div>
         {/* как на макете: ‹ ⋮ › (календарь — в меню «⋮» и по нажатию на строку KW) */}
         <div className="flex shrink-0 gap-1.5">
@@ -90,14 +183,14 @@ const Week = () => {
           <Link to={`/tag/${toISODate(nextExam.date)}`} className="flex items-center gap-3 py-2">
             <Flag className="size-4.75 shrink-0" />
             <div className="min-w-0 flex-1">
-              <h3 className="text-[15px] leading-5 font-medium text-ink">
+              <h3 className="text-body leading-5 font-medium text-ink">
                 {formatDe(nextExam.date, "EEEEEE")} · {fachName(nextExam.lesson.fach)}
               </h3>
-              <p className="mt-0.5 truncate text-[12px] leading-4">
+              <p className="mt-0.5 truncate text-caption leading-4">
                 Nächste Klausur{nextExam.lesson.topic && ` · ${nextExam.lesson.topic}`}
               </p>
             </div>
-            <span className="shrink-0 text-[13px] whitespace-nowrap">{relativeDays(nextExam.date, now)}</span>
+            <span className="shrink-0 text-label whitespace-nowrap">{relativeDays(nextExam.date, now)}</span>
             <ChevronRight className="size-4 shrink-0" />
           </Link>
         )}
@@ -105,7 +198,7 @@ const Week = () => {
         {/* статистика недели */}
         <div className="flex items-center gap-3 py-4">
           <ChartNoAxesColumn className="size-4.75 shrink-0" />
-          <h3 className="min-w-0 flex-1 text-[15px] leading-5 font-medium text-ink">
+          <h3 className="min-w-0 flex-1 text-body leading-5 font-medium text-ink">
             {stats.cancelled} {stats.cancelled === 1 ? "fällt" : "fallen"} aus · {stats.changed}{" "}
             {stats.changed === 1 ? "Vertretung" : "Vertretungen"}
           </h3>

@@ -1,34 +1,35 @@
 import { useNavigate } from "react-router-dom";
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
-import { Calendar, CalendarCheck, CalendarRange, Check, Eye, List, MoreVertical, RefreshCw, Share } from "lucide-react";
-import { toast } from "sonner";
-import { reloadPlan } from "../../shared/api/api";
+import { Calendar, CalendarCheck, CalendarRange, Check, Eye, List, MoreVertical, Printer, RefreshCw, Share } from "lucide-react";
+import { DESKTOP_QUERY, useMediaQuery } from "../../shared/hooks/useMediaQuery";
 import { useSheet } from "../../shared/hooks/useSheet";
+import { usePlanStore } from "../../shared/store/planStore";
 import { useUserStore } from "../../shared/store/userStore";
 import { toISODate } from "../../shared/utils/dates";
+import Kbd from "../ui/Kbd";
 import { menuContentClass, menuIconClass, menuItemClass, menuSeparatorClass } from "../ui/menuStyles";
 
 // ─────────────────────────────────────────────────────────────
-// Меню «⋮» у недели (скрин 6).
+// Меню «⋮» у недели.
+//   Телефон: Woche wählen, Zu heute springen, Heute öffnen, Wochenende, Plan neu laden, Woche teilen
+//   ПК (макет «Woche · Menü»): Zu heute springen T, Tagesansicht D, Wochenende,
+//                              Plan neu laden R, Woche teilen, Drucken ⌘P
+//   (сами клавиши T / D / R работают на странице недели — см. useHotkeys в Week.jsx)
 // weekStart — показываемая неделя, onToday — перейти на текущую неделю,
-// onPickWeek — открыть календарь «Woche wählen»
+// onPickWeek — открыть календарь «Woche wählen» (только телефон)
 // ─────────────────────────────────────────────────────────────
 const WeekMenu = ({ weekStart, onToday, onPickWeek }) => {
   const navigate = useNavigate(); // переход на другую страницу
+  const isDesktop = useMediaQuery(DESKTOP_QUERY); // ПК или телефон
   const { openSheet } = useSheet(); // открыть шторку
   const showWeekend = useUserStore((s) => s.showWeekend); // выходные показаны?
   const toggleWeekend = useUserStore((s) => s.toggleWeekend); // переключить выходные
   const hiddenCount = useUserStore((s) => s.hiddenCourses.length); // сколько курсов скрыто
   const showAllCourses = useUserStore((s) => s.showAllCourses); // вернуть все курсы
+  const reloadPlan = usePlanStore((s) => s.reload); // «Plan neu laden»
 
-  // «Plan neu laden»: toast.promise показывает «загрузка → готово/ошибка»
-  const handleReload = () => {
-    toast.promise(reloadPlan(), {
-      loading: "Plan wird geladen…",
-      success: "Plan ist aktuell",
-      error: "Plan konnte nicht geladen werden",
-    });
-  };
+  // Подсказка клавиши справа в пункте (только на ПК)
+  const shortcut = (key) => isDesktop && <Kbd className="ml-auto">{key}</Kbd>;
 
   return (
     <DropdownMenu.Root>
@@ -37,7 +38,7 @@ const WeekMenu = ({ weekStart, onToday, onPickWeek }) => {
         <button
           type="button"
           aria-label="Weitere Optionen"
-          className="flex size-9.5 items-center justify-center rounded-full bg-card data-[state=open]:bg-sand outline-none focus-visible:ring-2 focus-visible:ring-accent/50"
+          className="flex size-9.5 items-center justify-center rounded-full bg-card outline-none data-[state=open]:bg-sand focus-visible:ring-2 focus-visible:ring-accent/50"
         >
           <MoreVertical className="size-4.25" />
         </button>
@@ -46,14 +47,17 @@ const WeekMenu = ({ weekStart, onToday, onPickWeek }) => {
       <DropdownMenu.Portal>
         {/* align="end" — меню выравнивается по правому краю кнопки */}
         <DropdownMenu.Content align="end" sideOffset={8} className={menuContentClass}>
-          <DropdownMenu.Item className={menuItemClass} onSelect={onPickWeek}>
-            <Calendar className={menuIconClass} /> Woche wählen
-          </DropdownMenu.Item>
+          {/* на ПК календарь — отдельная кнопка 📅 в шапке, в меню он не нужен */}
+          {!isDesktop && (
+            <DropdownMenu.Item className={menuItemClass} onSelect={onPickWeek}>
+              <Calendar className={menuIconClass} /> Woche wählen
+            </DropdownMenu.Item>
+          )}
           <DropdownMenu.Item className={menuItemClass} onSelect={onToday}>
-            <CalendarCheck className={menuIconClass} /> Zu heute springen
+            <CalendarCheck className={menuIconClass} /> Zu heute springen {shortcut("T")}
           </DropdownMenu.Item>
           <DropdownMenu.Item className={menuItemClass} onSelect={() => navigate("/heute")}>
-            <List className={menuIconClass} /> Heute öffnen
+            <List className={menuIconClass} /> {isDesktop ? "Tagesansicht" : "Heute öffnen"} {shortcut("D")}
           </DropdownMenu.Item>
 
           {/* пункт-галочка: сам показывает, включено ли */}
@@ -66,8 +70,8 @@ const WeekMenu = ({ weekStart, onToday, onPickWeek }) => {
 
           <DropdownMenu.Separator className={menuSeparatorClass} />
 
-          <DropdownMenu.Item className={menuItemClass} onSelect={handleReload}>
-            <RefreshCw className={menuIconClass} /> Plan neu laden
+          <DropdownMenu.Item className={menuItemClass} onSelect={reloadPlan}>
+            <RefreshCw className={menuIconClass} /> Plan neu laden {shortcut("R")}
           </DropdownMenu.Item>
           <DropdownMenu.Item
             className={menuItemClass}
@@ -75,6 +79,12 @@ const WeekMenu = ({ weekStart, onToday, onPickWeek }) => {
           >
             <Share className={menuIconClass} /> Woche teilen
           </DropdownMenu.Item>
+          {/* «Drucken» — системная печать браузера (только ПК) */}
+          {isDesktop && (
+            <DropdownMenu.Item className={menuItemClass} onSelect={() => window.print()}>
+              <Printer className={menuIconClass} /> Drucken {shortcut("⌘P")}
+            </DropdownMenu.Item>
+          )}
 
           {/* показываем, только если есть скрытые курсы */}
           {hiddenCount > 0 && (

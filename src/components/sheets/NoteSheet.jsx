@@ -31,7 +31,7 @@ const NoteSheet = ({ open, onClose, sheet }) => {
     : formatDe(date, "EEEE, d. MMMM");
 
   return (
-    <Sheet open={open} onClose={onClose} eyebrow={eyebrow} title={note ? "Notiz bearbeiten" : "Neue Notiz"}>
+    <Sheet open={open} onClose={onClose} panelLabel="Notiz" eyebrow={eyebrow} title={note ? "Notiz bearbeiten" : "Neue Notiz"}>
       {/* key — при смене заметки форма создаётся заново с её текстом */}
       <NoteForm key={noteId ?? "neu"} note={note} noteId={noteId} date={sheet.datum} period={period?.n ?? null} onDone={onClose} />
     </Sheet>
@@ -63,14 +63,14 @@ const NoteForm = ({ note, noteId, date, period, onDone }) => {
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-4">
       <label className="flex flex-col gap-1.5">
-        <span className="px-1 text-[13px] font-bold text-muted">Nur für dich sichtbar</span>
+        <span className="px-1 text-label font-bold text-muted">Nur für dich sichtbar</span>
         <textarea
           value={text}
           onChange={(e) => setText(e.target.value)}
           placeholder="z. B. Sportsachen mitnehmen"
           rows={4}
           autoFocus // сразу можно печатать
-          className="w-full resize-none rounded-2xl bg-card p-3.5 text-[15px] font-bold text-ink outline-none placeholder:text-faint focus:ring-2 focus:ring-accent/30"
+          className="w-full resize-none rounded-2xl bg-card p-3.5 text-body font-bold text-ink outline-none placeholder:text-faint focus:ring-2 focus:ring-accent/30"
         />
       </label>
       <div className="flex gap-2.5">

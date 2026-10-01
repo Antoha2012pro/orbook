@@ -6,7 +6,7 @@ const DayInfoBanner = ({ info, onClick }) => {
     <button
       type="button"
       onClick={onClick}
-      className="flex items-center gap-3 rounded-2xl bg-sand px-3.5 py-3 text-left text-[13px] font-bold text-ink"
+      className="flex items-center gap-3 rounded-2xl bg-sand px-3.5 py-3 text-left text-label font-bold text-ink"
     >
       <Info className="size-4.5 shrink-0 text-muted" />
       <p className="min-w-0 flex-1">

@@ -29,6 +29,7 @@ const ColorSheet = ({ open, onClose, sheet }) => {
     <Sheet
       open={open}
       onClose={onClose}
+      panelLabel="Fachfarbe"
       eyebrow={fachName(fach)}
       title="Fachfarbe ändern"
       footer={<Button onClick={() => choose(null)}>Standardfarbe</Button>}
@@ -52,7 +53,7 @@ const ColorSheet = ({ open, onClose, sheet }) => {
             >
               {palette === current && <Check className="size-5" strokeWidth={3} />}
             </span>
-            <span className="text-[11px] font-bold text-muted">{fachName(palette)}</span>
+            <span className="text-small font-bold text-muted">{fachName(palette)}</span>
           </button>
         ))}
       </div>

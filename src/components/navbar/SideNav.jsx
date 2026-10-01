@@ -1,61 +1,62 @@
-import { Link, useLocation } from "react-router-dom";
-import { cn } from "../../shared/utils/cn";
 import { useState } from "react";
-import { Search } from "lucide-react";
-import SideNavHeader from "./SideNavHeader";
+import { useLocation } from "react-router-dom";
+import { getUpcomingExams } from "../../shared/data/timetable";
+import { useNow } from "../../shared/hooks/useNow";
+import { cn } from "../../shared/utils/cn";
 import { isTabActive } from "../../shared/utils/isTabActive";
-import NavigationLink from "./NavigationLink";
 import { navTabs } from "../../shared/constants/constants";
+import NavigationLink from "./NavigationLink";
+import QuickSearch from "./QuickSearch";
+import SideNavFooter from "./SideNavFooter";
+import SideNavHeader from "./SideNavHeader";
+import SoonList from "./SoonList";
 
+// ─────────────────────────────────────────────────────────────
+// Сайдбар на компьютере (≥ 1024px), как на макете:
+//   логотип + класс · поиск ⌘K · меню (у «Testen» счётчик) · «Bald»
+//   · «Einstellungen» · статус плана · тема · «Admin»
+// Сворачивается кнопкой в шапке до 71px (только иконки).
+// ─────────────────────────────────────────────────────────────
 const SideNav = () => {
-  const [searchValue, setSearchValue] = useState("");
-  const { pathname } = useLocation();
+  const { pathname } = useLocation(); // текущий адрес — для подсветки пунктов
+  const now = useNow(); // текущее время
+  const [isHidden, setIsHidden] = useState(false); // свёрнут ли сайдбар
 
-  const [isHidden, setIsHidden] = useState(false);
+  const examCount = getUpcomingExams(now).length; // счётчик у «Testen»
 
   return (
     <aside
       className={cn(
-        "sticky top-0 hidden h-dvh shrink-0 flex-col gap-5 overflow-hidden rounded-[20px] bg-card px-3.5 py-8 my-4 desktop:flex",
+        // sticky: сайдбар остаётся на месте при прокрутке; высота = экран − 2×16px
+        "sticky top-4 my-4 hidden h-[calc(100dvh-2rem)] shrink-0 flex-col overflow-hidden rounded-[24px] bg-card px-3.5 pt-4 pb-3.5 lg:flex print:hidden",
         "transition-[width] duration-300 ease-out",
         isHidden ? "w-[71px]" : "w-[232px]",
       )}
     >
       <SideNavHeader isHidden={isHidden} onChangeIsHidden={setIsHidden} />
-      <div className="relative h-10 shrink-0">
-        <Search className="pointer-events-none absolute top-1/2 left-[13.5px] size-4 -translate-y-1/2 text-faint" />
-        <input
-          type="text"
-          value={searchValue}
-          onChange={(e) => setSearchValue(e.target.value)}
-          onFocus={() => isHidden && setIsHidden(false)}
-          placeholder="Suchen"
-          aria-label="Suchen"
-          className={cn(
-            "h-full w-full min-w-0 rounded-full bg-paper pl-10 text-ink outline-none focus:ring-2 focus:ring-accent/30",
-            "transition-[color,padding] duration-300 ease-out placeholder:transition-colors",
-            isHidden
-              ? "pr-0 placeholder:text-transparent"
-              : "pr-4 placeholder:text-faint placeholder:delay-150",
-          )}
-        />
+
+      <div className="mt-4">
+        <QuickSearch collapsed={isHidden} onExpand={() => setIsHidden(false)} />
       </div>
-      <nav className="space-y-1">
+
+      <nav className="mt-5 space-y-1">
         {navTabs
           .filter((t) => t.desktop)
-          .map((tab) => {
-            const active = isTabActive(tab, pathname);
-
-            return (
-              <NavigationLink
-                key={tab.to}
-                active={active}
-                tab={tab}
-                isHidden={isHidden}
-              />
-            );
-          })}
+          .map((tab) => (
+            <NavigationLink
+              key={tab.to}
+              active={isTabActive(tab, pathname)}
+              tab={tab}
+              isHidden={isHidden}
+              badge={tab.to === "/testen" ? examCount : null} // число ближайших Klausuren
+            />
+          ))}
       </nav>
+
+      {/* «Bald» только в развёрнутом виде */}
+      {!isHidden && <SoonList />}
+
+      <SideNavFooter collapsed={isHidden} />
     </aside>
   );
 };

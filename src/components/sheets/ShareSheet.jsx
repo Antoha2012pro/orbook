@@ -21,7 +21,7 @@ const RANGES = [
 // ─────────────────────────────────────────────────────────────
 const ShareSheet = ({ open, onClose, sheet }) => {
   return (
-    <Sheet open={open} onClose={onClose} eyebrow="Nachricht auf Deutsch" title="Teilen">
+    <Sheet open={open} onClose={onClose} desktop="dialog" eyebrow="Nachricht auf Deutsch" title="Teilen">
       {/* key — при новом открытии с другим «bereich» настройки начинаются заново */}
       <ShareOptions key={`${sheet.bereich}-${sheet.kw}`} initialRange={sheet.bereich} weekStart={parseISODate(sheet.kw)} />
     </Sheet>
@@ -56,7 +56,7 @@ const ShareOptions = ({ initialRange, weekStart }) => {
 
 // Галочка с подписью
 const Checkbox = ({ label, checked, onChange }) => (
-  <label className="flex cursor-pointer items-center gap-2.5 rounded-2xl bg-card px-3.5 py-3 text-[14px] font-bold text-ink">
+  <label className="flex cursor-pointer items-center gap-2.5 rounded-2xl bg-card px-3.5 py-3 text-body-sm font-bold text-ink">
     <input
       type="checkbox"
       checked={checked}
@@ -78,9 +78,9 @@ const Composer = ({ initialText }) => {
         onChange={(e) => setText(e.target.value)}
         rows={6}
         aria-label="Nachricht"
-        className="w-full resize-none rounded-2xl bg-ok-tint p-3.5 text-[14px] leading-relaxed font-bold text-ink outline-none focus:ring-2 focus:ring-ok/40"
+        className="w-full resize-none rounded-2xl bg-ok-tint p-3.5 text-body-sm leading-relaxed font-bold text-ink outline-none focus:ring-2 focus:ring-ok/40"
       />
-      <p className="-mt-2 px-1 text-[12px] font-bold text-faint">Du kannst den Text vor dem Senden noch ändern.</p>
+      <p className="-mt-2 px-1 text-caption font-bold text-faint">Du kannst den Text vor dem Senden noch ändern.</p>
 
       <div className="flex gap-2.5">
         <Button onClick={() => copyText(text)}>
@@ -91,9 +91,10 @@ const Composer = ({ initialText }) => {
           href={whatsappUrl(text)}
           target="_blank"
           rel="noreferrer"
-          className="flex h-12 flex-1 items-center justify-center gap-2 rounded-full bg-accent text-[15px] font-extrabold text-on-accent active:opacity-80"
+          className="flex h-12 flex-1 items-center justify-center gap-2 rounded-full bg-accent text-body font-extrabold text-on-accent active:opacity-80"
         >
-          <MessageCircle className="size-4.5" /> WhatsApp
+          {/* на ПК откроется WhatsApp Web, поэтому и подпись такая (как на макете) */}
+          <MessageCircle className="size-4.5" /> WhatsApp<span className="hidden lg:inline"> Web</span>
         </a>
       </div>
     </>

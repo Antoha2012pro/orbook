@@ -17,13 +17,13 @@ const DayHeader = ({ day, isToday, hasExam, to, style }) => {
     >
       <span
         className={cn(
-          "mb-px text-[12px] leading-4 font-extrabold uppercase",
+          "mb-px text-caption leading-4 font-extrabold uppercase",
           isToday ? "text-today-sub" : "text-faint",
         )}
       >
         {format(day, "EEEEEE", { locale: de })}
       </span>
-      <span className="text-[20px] leading-6 font-black">{format(day, "d")}</span>
+      <span className="text-number leading-6 font-black">{format(day, "d")}</span>
 
       {isToday && (
         <span className="absolute top-1.25 right-1.75 size-1.5 rounded-full bg-today-sub" />

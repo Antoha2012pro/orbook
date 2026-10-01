@@ -13,7 +13,7 @@ const Badge = ({ variant = "changed", className, children }) => {
   return (
     <span
       className={cn(
-        "inline-flex shrink-0 items-center rounded-full px-2 py-1 text-[10px] leading-none font-extrabold tracking-wide whitespace-nowrap uppercase",
+        "inline-flex shrink-0 items-center rounded-full px-2 py-1 text-micro leading-none font-extrabold tracking-wide whitespace-nowrap uppercase",
         variants[variant], // цвет по типу
         className,
       )}

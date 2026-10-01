@@ -1,4 +1,4 @@
-import { NotebookPen, Share } from "lucide-react";
+import { FileText, Share } from "lucide-react";
 import { getDayLessons, periods } from "../../shared/data/timetable";
 import { useSheet } from "../../shared/hooks/useSheet";
 import { useUserStore } from "../../shared/store/userStore";
@@ -11,10 +11,11 @@ import Sheet from "../ui/Sheet";
 import StatusBadge from "../ui/StatusBadge";
 
 // Строка «Lehrer / Raum / Kurs / Info»
+// (на ПК — крупнее и без белой подложки, как на макете «Stunde · Details (Panel rechts)»)
 const Row = ({ label, children }) => (
-  <div className="flex gap-4 py-3">
-    <dt className="w-16 shrink-0 text-[14px] font-bold text-faint">{label}</dt>
-    <dd className="min-w-0 flex-1 text-[14px] font-bold text-ink">{children}</dd>
+  <div className="flex gap-4 py-3 lg:py-3.5">
+    <dt className="w-16 shrink-0 text-body-sm font-bold text-faint lg:w-20 lg:text-body lg:font-medium lg:text-muted">{label}</dt>
+    <dd className="min-w-0 flex-1 text-body-sm font-bold text-ink lg:text-body lg:font-semibold">{children}</dd>
   </div>
 );
 
@@ -45,6 +46,7 @@ const LessonSheet = ({ open, onClose, sheet }) => {
     <Sheet
       open={open}
       onClose={onClose}
+      panelLabel="Stunde"
       eyebrow={`${period.n}. Stunde · ${period.start}–${period.end}`}
       title={fachName(lesson.fach)}
       titleAside={<StatusBadge lesson={lesson} />}
@@ -52,7 +54,7 @@ const LessonSheet = ({ open, onClose, sheet }) => {
       icon={
         <span
           className={cn(
-            "grid size-11 shrink-0 place-items-center rounded-full text-[14px] font-black",
+            "grid size-11 shrink-0 place-items-center rounded-full text-body-sm font-black",
             fachClasses(lesson.fach, overrides),
           )}
         >
@@ -63,7 +65,7 @@ const LessonSheet = ({ open, onClose, sheet }) => {
         <>
           {/* replace: true — «Назад» из заметки не вернёт в эту шторку */}
           <Button onClick={() => openSheet("notiz", { datum: sheet.datum, stunde: sheet.stunde }, { replace: true })}>
-            <NotebookPen className="size-4.5" /> Notiz
+            <FileText className="size-4.5" /> Notiz
           </Button>
           <Button onClick={() => shareText(buildLessonText(lesson, date, period))}>
             <Share className="size-4.5" /> Teilen
@@ -72,7 +74,7 @@ const LessonSheet = ({ open, onClose, sheet }) => {
       }
     >
       {/* dl — список «название: значение» */}
-      <dl className="divide-y divide-hair rounded-2xl bg-card px-4">
+      <dl className="divide-y divide-hair rounded-2xl bg-card px-4 lg:rounded-none lg:bg-transparent lg:px-0">
         <Row label="Lehrer">
           <Changed value={lesson.teacher} original={lesson.originalTeacher} />
         </Row>
@@ -86,8 +88,8 @@ const LessonSheet = ({ open, onClose, sheet }) => {
 
       {/* Своя заметка к уроку, если есть */}
       {note && (
-        <div className="rounded-2xl bg-tint p-4 text-[14px] font-bold whitespace-pre-wrap text-ink">
-          <p className="mb-1 text-[11px] font-extrabold text-accent-ink uppercase">Meine Notiz</p>
+        <div className="rounded-2xl bg-tint p-4 text-body-sm font-bold whitespace-pre-wrap text-ink">
+          <p className="mb-1 text-small font-extrabold text-accent-ink uppercase">Meine Notiz</p>
           {note.text}
         </div>
       )}

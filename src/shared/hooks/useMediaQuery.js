@@ -12,5 +12,8 @@ export const useMediaQuery = (query) =>
     () => window.matchMedia(query).matches, // текущее значение
   );
 
-// Десктоп = брейкпоинт desktop из index.css (90rem = 1440px)
-export const DESKTOP_QUERY = "(min-width: 90rem)";
+// Компьютерный вид (сайдбар, панели справа) — с 1024px (брейкпоинт lg)
+export const DESKTOP_QUERY = "(min-width: 64rem)";
+
+// Широкий экран — макет 1:1 с правой колонкой (брейкпоинт desktop из index.css, 1440px)
+export const WIDE_QUERY = "(min-width: 90rem)";

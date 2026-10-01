@@ -7,7 +7,7 @@ export const menuContentClass =
 
 // Пункт меню; data-highlighted — наведение мышью или выбор стрелками
 export const menuItemClass =
-  "flex cursor-pointer items-center gap-3 rounded-xl px-3 py-2.5 text-[14px] font-bold outline-none select-none data-disabled:pointer-events-none data-disabled:opacity-40 data-highlighted:bg-sand";
+  "flex cursor-pointer items-center gap-3 rounded-xl px-3 py-2.5 text-body-sm font-bold outline-none select-none data-disabled:pointer-events-none data-disabled:opacity-40 data-highlighted:bg-sand";
 
 // Иконка в пункте меню
 export const menuIconClass = "size-4.5 shrink-0 text-muted";

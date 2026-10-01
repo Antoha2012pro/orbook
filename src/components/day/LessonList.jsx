@@ -12,8 +12,9 @@ const MIN_BREAK = 10;
 // ─────────────────────────────────────────────────────────────
 // Вид «Liste»: уроки дня сверху вниз + перемены между ними.
 // onOpen(index) — клик по уроку
+// variant — "outside" (телефон) или "inline" (ПК: время внутри карточки)
 // ─────────────────────────────────────────────────────────────
-const LessonList = ({ date, lessons, now, onOpen }) => {
+const LessonList = ({ date, lessons, now, onOpen, variant = "outside" }) => {
   const overrides = useUserStore((s) => s.colorOverrides); // свои цвета
   const notes = useUserStore((s) => s.notes); // все заметки (фильтруем ниже)
   const iso = toISODate(date); // "2025-09-17"
@@ -40,7 +41,7 @@ const LessonList = ({ date, lessons, now, onOpen }) => {
 
         return (
           <Fragment key={period.n}>
-            {gap >= MIN_BREAK && <BreakRow minutes={gap} />}
+            {gap >= MIN_BREAK && <BreakRow minutes={gap} inline={variant === "inline"} />}
             <LessonRow
               lesson={lesson}
               period={period}
@@ -51,6 +52,7 @@ const LessonList = ({ date, lessons, now, onOpen }) => {
               note={notes.find((n) => n.id === `${iso}#${period.n}`)} // заметка к этому уроку
               overrides={overrides}
               onOpen={() => onOpen(index)}
+              variant={variant}
             />
           </Fragment>
         );

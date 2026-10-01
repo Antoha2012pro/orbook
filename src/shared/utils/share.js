@@ -53,7 +53,8 @@ export const buildShareText = ({ range, includeChanges, includeExams, now, weekS
       getDayLessons(day).forEach((lesson, index) => {
         if (!lesson?.exam) return; // не Klausur
         const when = isSameDay(day, today) ? "Heute" : formatDe(day, "EEEEEE"); // "Fr" или "Heute"
-        lines.push(`• ${when} ${periods[index].n}. Std: Klausur ${fachName(lesson.fach)}`);
+        const type = lesson.examType === "test" ? "Test" : "Klausur"; // Test или Klausur
+        lines.push(`• ${when} ${periods[index].n}. Std: ${type} ${fachName(lesson.fach)}`);
       });
     }
   }
@@ -77,7 +78,7 @@ export const buildLessonText = (lesson, date, period) => {
     lines.push(`Vertretung: ${parts.join(", ") || `Raum ${lesson.room}`}`);
   }
   if (lesson.status !== "changed" && lesson.status !== "cancelled") lines.push(`Raum ${lesson.room} · ${lesson.teacher}`);
-  if (lesson.exam) lines.push(`Klausur${lesson.topic ? `: ${lesson.topic}` : ""}`); // Klausur и тема
+  if (lesson.exam) lines.push(`${lesson.examType === "test" ? "Test" : "Klausur"}${lesson.topic ? `: ${lesson.topic}` : ""}`); // Klausur/Test и тема
   if (lesson.info) lines.push(lesson.info); // пояснение
   lines.push(SIGNATURE);
   return lines.join("\n");

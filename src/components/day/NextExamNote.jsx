@@ -13,7 +13,7 @@ const NextExamNote = ({ now }) => {
   return (
     <Link
       to={`/tag/${toISODate(exam.date)}`}
-      className="flex items-center gap-3 rounded-2xl bg-tint px-4 py-3.5 text-[13px] font-bold text-accent-ink"
+      className="flex items-center gap-3 rounded-2xl bg-tint px-4 py-3.5 text-label font-bold text-accent-ink"
     >
       <Flag className="size-4.5 shrink-0" />
       <span>

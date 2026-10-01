@@ -47,8 +47,8 @@ const WeekGrid = ({ weekStart, onLessonClick }) => {
           style={{ gridRow: pi + 2, gridColumn: 1 }}
           className="flex flex-col items-center justify-center gap-px"
         >
-          <span className="text-[15px] leading-none font-extrabold text-ink">{p.n}</span>
-          <span className="text-[9px] leading-none font-medium text-faint">{p.start}</span>
+          <span className="text-body leading-none font-extrabold text-ink">{p.n}</span>
+          <span className="text-tiny leading-none font-medium text-faint">{p.start}</span>
         </div>
       ))}
 
